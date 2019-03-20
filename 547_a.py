@@ -1,23 +1,15 @@
+# import time
 import copy
 
-def helper(n):
-    primes = []
-    result = [{}]
-    if n == 1:
-        return result, primes
-    for i in range(1, n + 1):
-        for prime in primes:
-            if i % prime == 0:
-                new_result = copy.copy(result[i // prime - 1])
-                if prime in new_result:
-                    new_result[prime] += 1
-                else:
-                    new_result[prime] = 1
-                result.append(new_result)
-                break
-            primes.append(i)
-            result.append({i: 1})
-    return result, primes
+def helper(m):
+    n_2, n_3 = 0, 0
+    while m % 2 == 0:
+        m //= 2
+        n_2 += 1
+    while m % 3 == 0:
+        m //= 3
+        n_3 += 1
+    return n_2, n_3, m
 
 def test_helper():
     result, primes = helper(20)
@@ -26,10 +18,19 @@ def test_helper():
         print(i, ele)
 
 def solve(n, m):
-    pass
+    n_2, n_3, n_r = helper(n)
+    m_2, m_3, m_r = helper(m)
+    if m_r == n_r and m_2 >= n_2 and m_3 >= n_3:
+        return m_2 + m_3 - n_2 - n_3
+    else:
+        return -1
+
 def main():
     n, m = map(int, input().split())
+    # tick = time.time()
     print(solve(n, m))
+    # tock = time.time()
+    # print('T: {}'.format(round(tock - tick, 5)))
 
 if __name__ == "__main__":
-    test_helper()
+    main()
