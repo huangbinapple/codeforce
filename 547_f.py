@@ -31,29 +31,27 @@ def schedule(times):
         index(b, i, index_by_b)
     b_keys = sorted(list(index_by_b.keys()))
     # a_keys = sorted(list(index_by_a.keys()))
+    
+    result = []
     a_min = 0
-    while 1:
-        # collect pool
-        pool = set()
-        for k, v in index_by_a.items():
-            if k >= a_min:
-                pool |= v
-        if not pool:
-            break
-        # greedy select.
-        for k in (ele for ele in b_keys if ele > a_min):
-            candidates = pool & index_by_b[k]
-            if candidates:
-                chosen = candidates.pop()
-                result_indexs.append(chosen)
-                a, b = times[chosen]
-                a_min = b
+    # Get interval with minimun end time whose start time >= a_min.
+    flag = True
+    while flag:
+        flag = False
+        for end_time in (ele for ele in b_keys if ele > a_min):
+            for start in (times[i][0] for i in index_by_b[end_time]):
+                if start >= a_min:
+                    flag = True
+                    result.append((start, end_time)) 
+                    a_min = end_time
+                    break
+            if flag:
                 break
-    return [times[i] for i in result_indexs]
+    return result
                 
 def test_schedule():
     i = ((0, 4), (2, 4), (0, 2), (0, 1), (1, 2), (2, 3), (3, 4))
-    result = schedule_(i, 4)
+    result = schedule(i)
     print('len:', len(result))
     for ele in result:
         print(ele)
@@ -72,7 +70,7 @@ def solve(n, a_l):
     result = []
     for sum_, times in index_by_sum.items():
         # print('Finished sum:', sum_)
-        sub_result = schedule_(times, n)
+        sub_result = schedule(times)
         if len(sub_result) > len(result):
             result = sub_result
     return result
