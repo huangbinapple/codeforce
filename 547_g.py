@@ -19,13 +19,26 @@ def set_node_color(node, parent, parent_color, index, bad_nodes, colors):
 
 def solve(n, k, edges):
     colors = {edge: None for edge in edges}
-    index = {i : [] for i in range(1, n + 1)}
+    index = {i : {} for i in range(1, n + 1)}
     for a, b in edges:
-        index[a].append(b)
-        index[b].append(a)
+        index[a].add(b)
+        index[b].add(a)
     nodes = sorted(list(range(1, n + 1)), key=lambda x: len(index[x]), reverse=True)
     bad_nodes = set(nodes[:k])
-    set_node_color(nodes[k], None, None, index, bad_nodes, colors)
+
+    frontier = [(nodes[k], parent_node, parent_color)]
+    while frontier:
+        next_, parent_node, parent_color = frontier.pop()
+        color = 1
+        for child_node in (ele for ele in index[next_] if ele != next_):
+            if color == parent_color:
+                color += 1
+            new_color = parent_color if next_ in bad_nodes else color
+            set_color((next_, child_node), colors, new_color)
+            color += 1
+            frontier.append(child_node)
+
+    # set_node_color(nodes[k], None, None, index, bad_nodes, colors)
     return [colors[edge] for edge in edges]
 
 def main():
