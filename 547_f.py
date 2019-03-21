@@ -23,6 +23,7 @@ def schedule_(times, n):
 
 def schedule(times):
     # assume this is true as times.sort(key=lambda x: x[0])
+    # times.sort(key=lambda x: x[1])
     index_by_b = {}
     for time in times:
         index(time[1], time, index_by_b)
@@ -46,10 +47,14 @@ def test_schedule():
 
 def solve(n, a_l):
     index_by_sum = {}
-    for j in range(1, n + 1):
+    # for j in range(1, n + 1):
+        # sum_ = 0
+        # for i in range(j - 1, -1, -1):
+    for i in range(n):
         sum_ = 0
-        for i in range(j - 1, -1, -1):
-            sum_ += a_l[i]
+        for j in range(i + 1, n + 1):
+            sum_ += a_l[j - 1]
+            # print(i, j, sum_)
             if sum_ in index_by_sum:
                 index_by_sum[sum_].append((i, j))
             else:
