@@ -1,11 +1,12 @@
-import time
+# import time
 def index(key, item, index):
     if key in index:
-        index[key].add(item)
+        index[key].append(item)
     else:
-        index[key] = set([item])
+        index[key] = [item]
 
 def schedule_(times, n):
+    "A slower implementation."
     d = [None] * (n + 1)
     for start, end in times:
         for i in range(start + 1):
@@ -21,17 +22,15 @@ def schedule_(times, n):
     return result
 
 def schedule(times):
-    # print('\nin schedule')
-    index_by_a = {}
+    # assume this is true as times.sort(key=lambda x: x[1])
+    # print('I:', times)
     index_by_b = {}
     result_indexs = []
     for i in range(len(times)):
-        a, b = times[i]
-        index(a, i, index_by_a)
-        index(b, i, index_by_b)
+        index(times[i][1], i, index_by_b)
+    # for k, v in index_by_b.items():
+        # print(k, v)
     b_keys = sorted(list(index_by_b.keys()))
-    # a_keys = sorted(list(index_by_a.keys()))
-    
     result = []
     a_min = 0
     # Get interval with minimun end time whose start time >= a_min.
@@ -39,18 +38,17 @@ def schedule(times):
     while flag:
         flag = False
         for end_time in (ele for ele in b_keys if ele > a_min):
-            for start in (times[i][0] for i in index_by_b[end_time]):
-                if start >= a_min:
-                    flag = True
-                    result.append((start, end_time)) 
-                    a_min = end_time
-                    break
-            if flag:
+            start = times[index_by_b[end_time][-1]][0]
+            if start >= a_min:
+                flag = True
+                result.append((start, end_time)) 
+                a_min = end_time
                 break
+    # print('O:', result)
     return result
                 
 def test_schedule():
-    i = ((0, 4), (2, 4), (0, 2), (0, 1), (1, 2), (2, 3), (3, 4))
+    i = [(0, 4), (2, 4), (0, 2), (0, 1), (1, 2), (2, 3), (3, 4)]
     result = schedule(i)
     print('len:', len(result))
     for ele in result:
@@ -58,15 +56,15 @@ def test_schedule():
 
 def solve(n, a_l):
     index_by_sum = {}
-    for i in range(n):
+    for j in range(1, n + 1):
         sum_ = 0
-        for j in range(i + 1, n + 1):
-            sum_ += a_l[j - 1]
+        for i in range(j - 1, -1, -1):
+            sum_ += a_l[i]
             if sum_ in index_by_sum:
                 index_by_sum[sum_].append((i, j))
             else:
                 index_by_sum[sum_] = [(i, j)]
-    print('haha')
+    # print('haha')
     result = []
     for sum_, times in index_by_sum.items():
         # print('Finished sum:', sum_)
@@ -76,17 +74,17 @@ def solve(n, a_l):
     return result
 
 def main():
-    # n = int(input())
-    # a_l = list(map(int, input().split()))
-    n = 1500
-    a_l = range(1, n + 1)
-    tick = time.time()
+    n = int(input())
+    a_l = list(map(int, input().split()))
+    # n = 1500
+    # a_l = range(1, n + 1)
+    # tick = time.time()
     result = solve(n, a_l)
     print(len(result))
     for a, b in result:
         print(a + 1, b)
-    tock = time.time()
-    print('T:', round(tock - tick, 5))
+    # tock = time.time()
+    # print('T:', round(tock - tick, 5))
 
 if __name__ == "__main__":
     main()
