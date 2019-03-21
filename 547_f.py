@@ -22,7 +22,7 @@ def schedule_(times, n):
     return result
 
 def schedule(times):
-    # assume this is true as times.sort(key=lambda x: x[1])
+    # assume this is true as times.sort(key=lambda x: x[0])
     index_by_b = {}
     for time in times:
         index(time[1], time, index_by_b)
