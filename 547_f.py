@@ -5,6 +5,21 @@ def index(key, item, index):
     else:
         index[key] = set([item])
 
+def schedule_(times, n):
+    d = [None] * (n + 1)
+    for start, end in times:
+        for i in range(start + 1):
+            if d[i] is None or end < d[i][1]:
+                d[i] = (start, end)
+    # print('d:', d)
+    result = []
+    next_ = d[0]
+    while next_:
+        result.append(next_)
+        s = next_[1]
+        next_ = d[s]
+    return result
+
 def schedule(times):
     # print('\nin schedule')
     index_by_a = {}
@@ -38,7 +53,7 @@ def schedule(times):
                 
 def test_schedule():
     i = ((0, 4), (2, 4), (0, 2), (0, 1), (1, 2), (2, 3), (3, 4))
-    result = schedule(i)
+    result = schedule_(i, 4)
     print('len:', len(result))
     for ele in result:
         print(ele)
@@ -57,7 +72,7 @@ def solve(n, a_l):
     result = []
     for sum_, times in index_by_sum.items():
         # print('Finished sum:', sum_)
-        sub_result = schedule(times)
+        sub_result = schedule_(times, n)
         if len(sub_result) > len(result):
             result = sub_result
     return result
