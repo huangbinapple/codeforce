@@ -1,4 +1,4 @@
-import time
+# import time
 def index(key, item, index):
     if key in index:
         index[key].append(item)
@@ -24,14 +24,14 @@ def schedule_(times, n):
 def schedule(times):
     # assume this is true as times.sort(key=lambda x: x[1])
     index_by_b = {}
-    for i in range(len(times)):
-        index(times[i][1], i, index_by_b)
+    for time in times:
+        index(time[1], time, index_by_b)
     b_keys = sorted(list(index_by_b.keys()))
     result = []
     a_min = 0
     # Get interval with minimun end time whose start time >= a_min.
     for end_time in b_keys:
-        start = times[index_by_b[end_time][-1]][0]
+        start = index_by_b[end_time][-1][0]
         if start >= a_min:
             result.append((start, end_time)) 
             a_min = end_time
@@ -54,7 +54,7 @@ def solve(n, a_l):
                 index_by_sum[sum_].append((i, j))
             else:
                 index_by_sum[sum_] = [(i, j)]
-    print('haha')
+    # print('haha')
     result = []
     for sum_, times in index_by_sum.items():
         # print('Finished sum:', sum_)
@@ -64,17 +64,17 @@ def solve(n, a_l):
     return result
 
 def main():
-    # n = int(input())
-    # a_l = list(map(int, input().split()))
-    n = 1500
-    a_l = range(1, n + 1)
-    tick = time.time()
+    n = int(input())
+    a_l = list(map(int, input().split()))
+    # n = 1500
+    # a_l = range(1, n + 1)
+    # tick = time.time()
     result = solve(n, a_l)
     print(len(result))
     for a, b in result:
         print(a + 1, b)
-    tock = time.time()
-    print('T:', round(tock - tick, 5))
+    # tock = time.time()
+    # print('T:', round(tock - tick, 5))
 
 if __name__ == "__main__":
     main()
