@@ -23,13 +23,9 @@ def schedule_(times, n):
 
 def schedule(times):
     # assume this is true as times.sort(key=lambda x: x[1])
-    # print('I:', times)
     index_by_b = {}
-    result_indexs = []
     for i in range(len(times)):
         index(times[i][1], i, index_by_b)
-    # for k, v in index_by_b.items():
-        # print(k, v)
     b_keys = sorted(list(index_by_b.keys()))
     result = []
     a_min = 0
@@ -39,7 +35,6 @@ def schedule(times):
         if start >= a_min:
             result.append((start, end_time)) 
             a_min = end_time
-    # print('O:', result)
     return result
                 
 def test_schedule():
