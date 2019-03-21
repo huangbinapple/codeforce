@@ -1,4 +1,4 @@
-# import time
+import time
 def index(key, item, index):
     if key in index:
         index[key].append(item)
@@ -34,16 +34,11 @@ def schedule(times):
     result = []
     a_min = 0
     # Get interval with minimun end time whose start time >= a_min.
-    flag = True
-    while flag:
-        flag = False
-        for end_time in (ele for ele in b_keys if ele > a_min):
-            start = times[index_by_b[end_time][-1]][0]
-            if start >= a_min:
-                flag = True
-                result.append((start, end_time)) 
-                a_min = end_time
-                break
+    for end_time in (ele for ele in b_keys):
+        start = times[index_by_b[end_time][-1]][0]
+        if start >= a_min:
+            result.append((start, end_time)) 
+            a_min = end_time
     # print('O:', result)
     return result
                 
