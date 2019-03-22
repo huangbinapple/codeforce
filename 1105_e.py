@@ -7,8 +7,9 @@ def solve(events, n, m):
     while events:
         ele = events.pop()
         if not ele:
-            result += max(counter.values())
-            counter.clear()
+            if counter:
+                result += max(counter.values())
+                counter.clear()
         elif ele in counter:
             counter[ele] += 1
         else:
