@@ -42,9 +42,18 @@ def main():
     # Deal input here.
     n, m = map(int, input().split())
     events = []
+    d = {}
+    id_ = 1
     for i in range(n):
         line = input()
-        events.append(None if line.startswith('1') else line[2:])
+        if line.startswith('1'):
+            events.append(None)
+        else:
+            if line not in d:
+                d[line] = id_
+                id_ += 1
+            events.append(d[line])
+
     
     # tick = time.time()
     print(solve(events, n, m))
