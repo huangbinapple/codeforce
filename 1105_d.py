@@ -10,7 +10,7 @@ def get_frontiers(feild, n, m, p):
             ele = feild[i][j]
             if 1 <= ele <= 9:
                 # print('ele:', ele)
-                frontiers[ele - 1].append((i, j))
+                frontiers[ele - 1].append((i, j, None))
     return frontiers
 
 def go(player_id, frontier, n_turn, feild, n, m):
@@ -19,7 +19,7 @@ def go(player_id, frontier, n_turn, feild, n, m):
     while n_turn and frontier:
         n_turn -= 1
         new_frontier = []
-        for i, j in frontier:
+        for i, j, hint in frontier:
             # Down.
             if i + 1 < n:
                 new_space = feild[i + 1][j]
