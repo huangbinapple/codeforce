@@ -66,27 +66,36 @@ def go(player_id, frontier, n_turn, feild, n, m):
 def solve(speeds, feild, n, m, p):
     frontiers = get_frontiers(feild, n, m, p)
     # print('f:', frontiers)
-    hope = True
+    hope = set(range(p))
     while hope:
-        hope = False
-        for i in range(len(speeds)):
+        new_hope = set()
+        for i in hope:
             n_turn = speeds[i]
             frontier = frontiers[i]
             new_frontier = go(i + 1, frontier, n_turn, feild, n, m)
             # print('i:', i)
             # print(new_frontier)
             if new_frontier:
-                hope = True
+                new_hope.add(i)
             frontiers[i] = new_frontier
+        hope = new_hope
     result = get_frontiers(feild, n, m, p)
     return [len(ele) for ele in result]
 
 def test():
-    n, m, p = 1000, 1000, 2
-    speeds = [300, 1000]
-    feild = [[0] * m for i in range(n)]
-    feild[0][0] = 1
-    feild[123][999] = 2
+    n, m, p = 1000, 1000, 9
+    speeds = [1000000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 1]
+    feild = [[0, -1] * (m // 2) for i in range(n)]
+    for i in range(m):
+        if i % 4 != 1:
+            feild[0][i] = 0
+        if i % 4 != 3:
+            feild[n - 1][i] = 0
+    # feild[0][0] = 1
+    for i in range(9):
+        feild[0][i * 8] = i + 1    
+    # for ele in feild:
+        # print(ele)
     tick = time.time()
     result = solve(speeds, feild, n, m, p)
     tock = time.time()
