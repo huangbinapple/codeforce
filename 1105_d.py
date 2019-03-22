@@ -20,15 +20,40 @@ def go(player_id, frontier, n_turn, feild, n, m):
         n_turn -= 1
         new_frontier = []
         for i, j in frontier:
-            for d_i, d_j in (-1, 0), (1, 0), (0, 1), (0, -1):
+            # Down.
+            if i + 1 < n:
+                new_space = feild[i + 1][j]
+                if not new_space:
+                    feild[i + 1][j] = player_id
+                    new_frontier.append((i + 1, j))
+            # Up.
+            if i - 1 >= 0:
+                new_space = feild[i - 1][j]
+                if not new_space:
+                    feild[i - 1][j] = player_id
+                    new_frontier.append((i - 1, j))
+            # Rigth.
+            if j + 1 < m:
+                new_space = feild[i][j + 1]
+                if not new_space:
+                    feild[i][j + 1] = player_id
+                    new_frontier.append((i, j + 1))
+            # Left.
+            if j - 1 >= 0:
+                new_space = feild[i][j - 1]
+                if not new_space:
+                    feild[i][j - 1] = player_id
+                    new_frontier.append((i, j - 1))
+
+            # for d_i, d_j in (-1, 0), (1, 0), (0, 1), (0, -1):
                 # check boarder.
-                new_i, new_j = i + d_i, j + d_j
-                if new_i < 0 or new_j < 0 or new_i > n - 1 or new_j > m - 1:
-                    continue
-                new_space = feild[new_i][new_j]
-                if new_space == 0:
-                    feild[new_i][new_j] = player_id
-                    new_frontier.append((new_i, new_j))
+                # new_i, new_j = i + d_i, j + d_j
+                # if new_i < 0 or new_j < 0 or new_i > n - 1 or new_j > m - 1:
+                    # continue
+                # new_space = feild[new_i][new_j]
+                # if new_space == 0:
+                    # feild[new_i][new_j] = player_id
+                    # new_frontier.append((new_i, new_j))
         frontier = new_frontier
                 # print('haha:', frontier)
         # print('player:', player_id)
