@@ -1,19 +1,41 @@
 # import time
+import copy
 
+def find_max_clique(root, index, pre_set, depth):
+    # print('in find:', root, pre_set, depth)
+    next_ = index[root] & pre_set
+    result = depth
+    for n in next_:
+        result = max(result, find_max_clique(n, index, next_, depth + 1))
+    return result
 
 def solve(events, n, m):
-    result = 0
-    counter = {}
+    index = {}
+    r = set()
     while events:
         ele = events.pop()
         if not ele:
-            if counter:
-                result += max(counter.values())
-                counter.clear()
-        elif ele in counter:
-            counter[ele] += 1
-        else:
-            counter[ele] = 1
+            # ele is None
+            r.clear()
+        elif ele:
+            # ele not None.
+            if ele not in index:
+                index[ele] = set()
+            for n in r:
+                index[n].add(ele)
+            index[ele].update(r)
+            r.add(ele)
+    whole = set(index.keys())
+    # print('w:', whole)
+    for k in index.keys():
+        index[k] = whole - index[k] - {k}
+    for s in index.values():
+        s.add(None)
+    # Add fake node.
+    index[None] = whole
+    # for k, v in index.items():
+        # print(k, v)
+    result = find_max_clique(None, index, whole, depth=0)
     return result
     
 def main():
