@@ -1,3 +1,6 @@
+import time
+
+
 def get_frontiers(feild, n, m, p):
     # print(feild)
     # print(n, m)
@@ -21,8 +24,6 @@ def go(player_id, frontier, n_turn, feild, n, m):
                 # check boarder.
                 new_i, new_j = i + d_i, j + d_j
                 if new_i < 0 or new_j < 0 or new_i > n - 1 or new_j > m - 1:
-                    # DEBUG: should update loop variable `frontier` here before continue.
-                    frontier = []
                     continue
                 new_space = feild[new_i][new_j]
                 if new_space == 0:
@@ -37,8 +38,8 @@ def go(player_id, frontier, n_turn, feild, n, m):
     # print('Got new frontier:', frontier)
     return frontier
 
-def solve(speeds, feild, n, m):
-    frontiers = get_frontiers(feild, n, m, len(speeds))
+def solve(speeds, feild, n, m, p):
+    frontiers = get_frontiers(feild, n, m, p)
     # print('f:', frontiers)
     hope = True
     while hope:
@@ -52,8 +53,20 @@ def solve(speeds, feild, n, m):
             if new_frontier:
                 hope = True
             frontiers[i] = new_frontier
-    result = get_frontiers(feild, n, m, len(speeds))
+    result = get_frontiers(feild, n, m, p)
     return [len(ele) for ele in result]
+
+def test():
+    n, m, p = 1000, 1000, 2
+    speeds = [300, 1000]
+    feild = [[0] * m for i in range(n)]
+    feild[0][0] = 1
+    feild[123][999] = 2
+    tick = time.time()
+    result = solve(speeds, feild, n, m, p)
+    tock = time.time()
+    print(' '.join(map(str, result)))
+    print('T:', round(tock - tick, 5))
 
 def main():
     d = {str(i): i for i in range(1, 10)}
@@ -66,7 +79,7 @@ def main():
         feild.append(list(map(d.get, input())))
     # for ele in feild:
         # print(ele)
-    result = solve(speeds, feild, n, m)
+    result = solve(speeds, feild, n, m, p)
     print(' '.join(map(str, result)))
     # for ele in feild:
         # print(ele)
