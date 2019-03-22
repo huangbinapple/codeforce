@@ -68,17 +68,17 @@ def solve(speeds, feild, n, m, p):
     # print('f:', frontiers)
     hope = set(range(p))
     while hope:
-        new_hope = set()
+        lost_hope = set()
         for i in hope:
             n_turn = speeds[i]
             frontier = frontiers[i]
             new_frontier = go(i + 1, frontier, n_turn, feild, n, m)
             # print('i:', i)
             # print(new_frontier)
-            if new_frontier:
-                new_hope.add(i)
+            if not new_frontier:
+                lost_hope.add(i)
             frontiers[i] = new_frontier
-        hope = new_hope
+        hope -= lost_hope
     result = get_frontiers(feild, n, m, p)
     return [len(ele) for ele in result]
 
