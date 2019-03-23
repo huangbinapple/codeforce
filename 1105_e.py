@@ -20,34 +20,32 @@ def test_find():
     index = {1: {2, 3, 4}, 2: {1, 3, 4}, 3: {1, 2}, 4: {1, 2}}
     print(find_max_clique({1, 2, 3, 4}, 0, 0, index))
 
-def solve(events):
-    index = {}
-    r = set()
+def solve(events, m):
+    index = [set() for _ in range(m)]
+    r = []
     while events:
         ele = events.pop()
-        if not ele:
+        if ele is None:
             # ele is None
             r.clear()
-        elif ele:
+        else:
             # ele not None.
-            if ele not in index:
-                index[ele] = set()
             for n in r:
                 index[n].add(ele)
             index[ele].update(r)
-            r.add(ele)
-    whole = set(index.keys())
+            r.append(ele)
+    whole = set(range(m))
     # print('w:', whole)
-    for k in index.keys():
-        index[k] = whole - index[k] - {k}
+    for i in range(m):
+        index[i] = whole - index[i] - {i}
     return find_max_clique(whole, 0, 0, index)
 
 def test():
     events = []
-    for i in range(1, 500):
+    for i in range(500):
         events.extend([None, i])
     tick = time.time()
-    print(solve(events))
+    print(solve(events, 500))
     tock = time.time()
     print('T:', round(tock - tick, 5)) 
     
@@ -56,7 +54,7 @@ def main():
     n, m = map(int, input().split())
     events = []
     d = {}
-    id_ = 1
+    id_ = 0
     for i in range(n):
         line = input()
         if line.startswith('1'):
@@ -66,10 +64,9 @@ def main():
                 d[line] = id_
                 id_ += 1
             events.append(d[line])
-
     
     # tick = time.time()
-    print(solve(events))
+    print(solve(events, m))
     # tock = time.time()
     # print(round(tock - tick, 5))
 
