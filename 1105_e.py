@@ -1,24 +1,48 @@
 import time
 
-def find_max_clique(remain, size, max_, index):
-    # print(remain, chosen, max_)
+def find_max_clique(remain, size, max_, index, maxs):
+    # print(remain, size, max_)
     result = max_
     if size + len(remain) <= result:
-        # print('pruning...')
+        # print('pruning (1)...')
         return result
     if not remain:
         # print('trivial')
         return size
-    while len(remain) + size > result:
-        candidate = remain.pop()
-        sub_result = find_max_clique(remain & index[candidate], size + 1 , result, index)
-        result = max(result, sub_result)
+    while remain:
+        candidate = max(remain)
+        # print('get candidate:', candidate)
+        if maxs[candidate] + size <= result:
+            # print('pruning (2)...')
+            return result
+        if size + len(remain) <= result:
+            # print('pruning (3)...')
+            return result
+        remain.remove(candidate)
+        # print('entering...')
+        sub_result = find_max_clique(remain & index[candidate], size + 1 , result, index, maxs)
+        if sub_result > result:
+            # print('{} > {}, existing...'.format(sub_result, result))
+            result = sub_result
+            return result
     # print('result:', result)
     return result
 
 def test_find():
-    index = {1: {2, 3, 4}, 2: {1, 3, 4}, 3: {1, 2}, 4: {1, 2}}
-    print(find_max_clique({1, 2, 3, 4}, 0, 0, index))
+    # index = {1: {2, 3, 4}, 2: {1, 3, 4}, 3: {1, 2}, 4: {1, 2}}
+    index = [{2, 4, 5, 7}, {4, 5, 6}, {0, 5, 6, 7},
+        {5, 6 ,7}, {0, 1, 6, 7}, {0, 1, 2, 3}, {1, 2, 3, 4},
+        {0, 2, 3, 4}]
+    m = 8
+    maxs = [0] * m
+    whole = set()
+    for i in range(m):
+        # print('i:', i)
+        whole.add(i)
+        # print('w:', whole)
+        maxs[i] = max(maxs[i - 1], find_max_clique(whole & index[i], 1, maxs[i - 1], index, maxs))
+        # print()
+    # print(maxs)
 
 def solve(events, m):
     index = [set() for _ in range(m)]
@@ -38,14 +62,21 @@ def solve(events, m):
     # print('w:', whole)
     for i in range(m):
         index[i] = whole - index[i] - {i}
-    return find_max_clique(whole, 0, 0, index)
+    maxs = [0] * m
+    whole = set()
+    for i in range(m):
+        whole.add(i)
+        maxs[i] = max(maxs[i - 1], find_max_clique(whole & index[i], 1, maxs[i - 1], index, maxs))
+    return maxs[-1]
+
 
 def test():
     events = []
-    for i in range(500):
+    m = 700
+    for i in range(m):
         events.extend([None, i])
     tick = time.time()
-    print(solve(events, 500))
+    print(solve(events, m))
     tock = time.time()
     print('T:', round(tock - tick, 5)) 
     
