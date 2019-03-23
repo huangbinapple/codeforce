@@ -1,4 +1,4 @@
-# import time
+import time
 import copy
 
 def find_max_clique(root, index, pre_set, depth):
@@ -9,7 +9,7 @@ def find_max_clique(root, index, pre_set, depth):
         result = max(result, find_max_clique(n, index, next_, depth + 1))
     return result
 
-def solve(events, n, m):
+def solve(events):
     index = {}
     r = set()
     while events:
@@ -37,6 +37,15 @@ def solve(events, n, m):
         # print(k, v)
     result = find_max_clique(None, index, whole, depth=0)
     return result
+
+def test():
+    events = []
+    for i in range(1, 20):
+        events.extend([None, i])
+    tick = time.time()
+    print(solve(events))
+    tock = time.time()
+    print(round(tock - tick, 5)) 
     
 def main():
     # Deal input here.
@@ -56,10 +65,10 @@ def main():
 
     
     # tick = time.time()
-    print(solve(events, n, m))
+    print(solve(events))
     # tock = time.time()
     # print(round(tock - tick, 5))
 
 
 if __name__ == '__main__':
-    main()
+    test()
