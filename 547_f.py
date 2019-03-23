@@ -1,8 +1,35 @@
+import time
+
+
 def index(key, item, index):
     if key in index:
         index[key].append(item)
     else:
         index[key] = [item]
+
+def is_in_order(l):
+    if not l:
+        return True
+    for i in range(1, len(l)):
+        old, new = l[i - 1], l[i]
+        if new[0] < old[0]:
+            return False
+        elif new[0] == old[0]:
+            if new[1] < old[1]:
+                return False
+    return True
+
+def schedule2(times):
+    # print(times)
+    assert is_in_order(times)
+    result = []
+    a_min = 0
+    for s, e in times:
+        if s >= a_min:
+            result.append((s, e))
+            a_min = e
+    print(len(result), ':', times)
+    return result
 
 def schedule(times):
     index_by_b = {}
@@ -13,7 +40,7 @@ def schedule(times):
     a_min = 0
     # Get interval with minimun end time whose start time >= a_min.
     for end_time in b_keys:
-        start = index_by_b[end_time][-1][0]
+        start = index_by_b[end_time].pop()[0]
         if start >= a_min:
             result.append((start, end_time)) 
             a_min = end_time
@@ -31,10 +58,24 @@ def solve(n, a_l):
                 index_by_sum[sum_] = [(i, j)]
     result = []
     for sum_, times in index_by_sum.items():
-        sub_result = schedule(times)
+        sub_result = schedule2(times)
         if len(sub_result) > len(result):
             result = sub_result
     return result
+
+def test():
+    n = 7
+    a_l = [4, 1, 2, 2, 1, 5, 3]
+    # n = 1500
+    # a_l = list(range(1, n + 1))
+    tick = time.time()
+    result = solve(n, a_l)
+    tock = time.time()
+    print(len(result))
+    for a, b in result:
+        print(a + 1, b)
+    print("T:", round(tock - tick, 5))
+
 
 def main():
     n = int(input())
