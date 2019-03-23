@@ -1,27 +1,24 @@
 import time
-import copy
 
 def find_max_clique(remain, size, max_, index):
     # print(remain, chosen, max_)
-    result = size
-    if size + len(remain) <= max_:
+    result = max_
+    if size + len(remain) <= result:
         # print('pruning...')
-        return None
+        return result
     if not remain:
         # print('trivial')
-        return result
-    while remain:
-        new_chosen = remain.pop()
-        sub_result = find_max_clique(remain & index[new_chosen], size + 1 , max_, index)
-        if sub_result and sub_result > max_:
-            max_ = sub_result
-            result = sub_result
+        return size
+    while len(remain) + size > result:
+        candidate = remain.pop()
+        sub_result = find_max_clique(remain & index[candidate], size + 1 , result, index)
+        result = max(result, sub_result)
     # print('result:', result)
     return result
 
 def test_find():
     index = {1: {2, 3, 4}, 2: {1, 3, 4}, 3: {1, 2}, 4: {1, 2}}
-    print(find_max_clique({1, 2, 3, 4}, set(), 0, index))
+    print(find_max_clique({1, 2, 3, 4}, 0, 0, index))
 
 def solve(events):
     index = {}
@@ -47,7 +44,7 @@ def solve(events):
 
 def test():
     events = []
-    for i in range(1, 110):
+    for i in range(1, 500):
         events.extend([None, i])
     tick = time.time()
     print(solve(events))
