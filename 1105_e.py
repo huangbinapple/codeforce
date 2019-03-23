@@ -3,7 +3,7 @@ import copy
 
 def find_max_clique(remain, chosen, max_, index):
     # print(remain, chosen, max_)
-    result = copy.copy(chosen)
+    result = chosen
     if len(chosen) + len(remain) <= max_:
         # print('pruning...')
         return None
