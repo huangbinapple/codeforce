@@ -1,10 +1,10 @@
 import time
 import copy
 
-def find_max_clique(remain, chosen, max_, index):
+def find_max_clique(remain, size, max_, index):
     # print(remain, chosen, max_)
-    result = chosen
-    if len(chosen) + len(remain) <= max_:
+    result = size
+    if size + len(remain) <= max_:
         # print('pruning...')
         return None
     if not remain:
@@ -12,9 +12,9 @@ def find_max_clique(remain, chosen, max_, index):
         return result
     while remain:
         new_chosen = remain.pop()
-        sub_result = find_max_clique(remain & index[new_chosen], chosen ^ {new_chosen} , max_, index)
-        if sub_result and len(sub_result) > max_:
-            max_ = len(sub_result)
+        sub_result = find_max_clique(remain & index[new_chosen], size + 1 , max_, index)
+        if sub_result and sub_result > max_:
+            max_ = sub_result
             result = sub_result
     # print('result:', result)
     return result
@@ -43,11 +43,11 @@ def solve(events):
     # print('w:', whole)
     for k in index.keys():
         index[k] = whole - index[k] - {k}
-    return find_max_clique(whole, set(), 0, index)
+    return find_max_clique(whole, 0, 0, index)
 
 def test():
     events = []
-    for i in range(1, 11):
+    for i in range(1, 110):
         events.extend([None, i])
     tick = time.time()
     print(solve(events))
@@ -72,7 +72,7 @@ def main():
 
     
     # tick = time.time()
-    print(len(solve(events)))
+    print(solve(events))
     # tock = time.time()
     # print(round(tock - tick, 5))
 
