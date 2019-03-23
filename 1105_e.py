@@ -13,7 +13,7 @@ def find_max_clique(remain, chosen, max_, index):
     while remain:
         new_chosen = remain.pop()
         sub_result = find_max_clique(remain & index[new_chosen], chosen ^ {new_chosen} , max_, index)
-        if sub_result:
+        if sub_result and len(sub_result) > max_:
             max_ = len(sub_result)
             result = sub_result
     # print('result:', result)
