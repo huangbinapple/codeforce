@@ -1,13 +1,27 @@
 import time
 import copy
 
-def find_max_clique(root, index, pre_set, depth):
-    # print('in find:', root, pre_set, depth)
-    next_ = index[root] & pre_set
-    result = depth
-    for n in next_:
-        result = max(result, find_max_clique(n, index, next_, depth + 1))
+def find_max_clique(remain, chosen, max_, index):
+    # print(remain, chosen, max_)
+    result = copy.copy(chosen)
+    if len(chosen) + len(remain) <= max_:
+        # print('pruning...')
+        return None
+    if not remain:
+        # print('trivial')
+        return result
+    while remain:
+        new_chosen = remain.pop()
+        sub_result = find_max_clique(remain & index[new_chosen], chosen ^ {new_chosen} , max_, index)
+        if sub_result:
+            max_ = len(sub_result)
+            result = sub_result
+    # print('result:', result)
     return result
+
+def test_find():
+    index = {1: {2, 3, 4}, 2: {1, 3, 4}, 3: {1, 2}, 4: {1, 2}}
+    print(find_max_clique({1, 2, 3, 4}, set(), 0, index))
 
 def solve(events):
     index = {}
@@ -29,23 +43,16 @@ def solve(events):
     # print('w:', whole)
     for k in index.keys():
         index[k] = whole - index[k] - {k}
-    for s in index.values():
-        s.add(None)
-    # Add fake node.
-    index[None] = whole
-    # for k, v in index.items():
-        # print(k, v)
-    result = find_max_clique(None, index, whole, depth=0)
-    return result
+    return find_max_clique(whole, set(), 0, index)
 
 def test():
     events = []
-    for i in range(1, 20):
+    for i in range(1, 11):
         events.extend([None, i])
     tick = time.time()
     print(solve(events))
     tock = time.time()
-    print(round(tock - tick, 5)) 
+    print('T:', round(tock - tick, 5)) 
     
 def main():
     # Deal input here.
@@ -65,10 +72,10 @@ def main():
 
     
     # tick = time.time()
-    print(solve(events))
+    print(len(solve(events)))
     # tock = time.time()
     # print(round(tock - tick, 5))
 
 
 if __name__ == '__main__':
-    test()
+    main()
