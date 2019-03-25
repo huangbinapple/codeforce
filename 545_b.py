@@ -1,18 +1,39 @@
 # import time
-# import random
+import random
 
 
 def helper(s):
     size = len(s)
-    for m in range(1, size):
+    c_l, c_r = [0, 0], [0, 0]
+    candidate_overlaps = []
+    for i in range(size):
+        if s[i] == '0':
+            c_l[0] += 1
+        else:
+            c_l[1] += 1
+        if s[size - 1 - i] == '0':
+            c_r[0] += 1
+        else:
+            c_r[1] += 1
+        if c_l == c_r:
+            candidate_overlaps.append(i + 1)
+    # Get ride of the trivial overlap size, with is the length of s.
+    candidate_overlaps.pop()
+    result = 0
+    # print('candidates:', candidate_overlaps)
+    for overlap in reversed(candidate_overlaps):
+        # print('overlap:', overlap)
+        delta = size - overlap
+        # print('delta:', delta)
         found = True
-        for i in range(size - m):
-            if s[i] != s[i + m]:
+        for start in range(overlap):
+            if s[start] != s[start + delta]:
                 found = False
                 break
         if found:
-            return size - m
-    return 0
+            result = overlap
+            break
+    return result
 
 def counter(s):
     a, b = 0, 0
@@ -24,8 +45,12 @@ def counter(s):
     return a, b
 
 def test_helper():
+    i = [''.join(('1' if random.random() > .05 else '0' for i in range(500000)))]
+    i = ['1'] * 500000
+    i[-2] = '0'
+    i = [''.join(i)]
     i = ['101', '110']
-    # i = [''.join(('1' if random.random() > .05 else '0'))]
+    print('haha')
     for ele in i:
         print(helper(ele))
 
