@@ -2,17 +2,22 @@
 
 
 def solve():
-    pass
-    
+    return 0
+
 def main():
-    # Deal input here.
-
-    
+    # Deal with input.
+    pass
     # tick = time.time()
-    print(solve())
+    result = solve()
     # tock = time.time()
-    # print(round(tock - tick, 5))
+    # Deal with output.
+    pass
 
+    # Printe time.
+    # print('T:', round(tock - tick ,5))
 
-if __name__ == '__main__':
+def test():
+    pass
+
+if __name__ == "__main__":
     main()
