@@ -1,22 +1,18 @@
 # import time
-def list_equal(a, b):
-    size = len(a)
-    for i in range(size):
-        if a[i] != b[size - 1 -i]:
-            return False
-    return True
+# import random
+
 
 def helper(s):
-    a = list(s)
-    b = list(reversed(a))
-    result = len(a)
-    while a:
-        result -= 1
-        a.pop()
-        b.pop()
-        if list_equal(a, b):
-            break
-    return result
+    size = len(s)
+    for m in range(1, size):
+        found = True
+        for i in range(size - m):
+            if s[i] != s[i + m]:
+                found = False
+                break
+        if found:
+            return size - m
+    return 0
 
 def counter(s):
     a, b = 0, 0
@@ -28,7 +24,8 @@ def counter(s):
     return a, b
 
 def test_helper():
-    i = ['101', '', '110']
+    i = ['101', '110']
+    # i = [''.join(('1' if random.random() > .05 else '0'))]
     for ele in i:
         print(helper(ele))
 
