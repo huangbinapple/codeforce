@@ -1,6 +1,5 @@
 # import time
 import itertools
-import copy
 
 def delete_node(children, node):
     for v in children:
@@ -33,13 +32,14 @@ def solve(potentials, clubs, dies, m, n, d):
     # print('club_index')
     # print(club_index)
     childrens = [set() for i in range(n)]
-    potential_max = max(potential_index.keys())
-    # print('p_max:', potential_max)
-    for p in range(potential_max):
-        for a, b in filter(lambda x: clubs[x[0]] != clubs[x[1]],
-                itertools.product(potential_index.get(p, {}), potential_index.get(p + 1, {}))):
-            # print(a, b)
-            childrens[a].add(b)
+    potentials_index_key = sorted(list(potential_index.keys()))
+    for i in range(1, len(potentials_index_key)):
+        last_po, current_po = potentials_index_key[i - 1], potentials_index_key[i]
+        if last_po == current_po - 1:
+            for a, b in filter(lambda x: clubs[x[0]] != clubs[x[1]],
+                    itertools.product(potential_index[last_po], potential_index[current_po])):
+
+                childrens[a].add(b)
     result = []
     # print('children:')
     # print(childrens)
@@ -58,7 +58,7 @@ def main():
     clubs = list(map(int, input().split()))
     d = int(input())
     dies = []
-    for i in range(d):
+    for _ in range(d):
         dies.append(int(input()) - 1)
     # tick = time.time()
     result = solve(potentials, clubs, dies, m, n, d)
