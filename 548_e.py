@@ -23,7 +23,7 @@ def find_longest_path(children, clubs, frontier):
 
 def solve(potentials, clubs, dies, m, n, d):
     potential_index = {}
-    for i, (p, c) in enumerate(zip(potentials, clubs)):
+    for i, p in enumerate(potentials):
         if p in potential_index:
             potential_index[p].add(i)
         else:
