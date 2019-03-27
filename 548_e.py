@@ -7,20 +7,34 @@ def delete_node(children, node):
 
 def find_longest_path(children, clubs, frontier):
     clubs_visited = []
-    result = 0
+    path = []
+    top_path = []
+    result = [0, 0]
     while frontier:
         ele = frontier.pop()
         if ele is None:
             clubs_visited.pop()
+            path.pop()
         else:
             frontier.append(None)
-            frontier.extend(filter(lambda x: clubs[x] not in clubs_visited,
-                children[ele]))
+            new_nodes = list(filter(lambda x: clubs[x] not in clubs_visited, children[ele]))
+            frontier.extend(new_nodes)
             clubs_visited.append(clubs[ele])
-            result = max(result, len(clubs_visited))
-    return result
+            path.append(ele)
+            if not new_nodes:
+                # print('ya')
+                if len(clubs_visited) > result[0]:
+                    top_path = path.copy()
+                result.append(len(clubs_visited))
+                result.sort(reverse=True)
+                result.pop()
+    return result, top_path
 
 def solve(potentials, clubs, dies, m, n, d):
+    debug = False
+    if m > 100:
+        print('Debug on due to m =', m)
+        debug = True
     potential_index = {}
     for i, p in enumerate(potentials):
         if p in potential_index:
@@ -38,17 +52,32 @@ def solve(potentials, clubs, dies, m, n, d):
         if last_po == current_po - 1:
             for a, b in filter(lambda x: clubs[x[0]] != clubs[x[1]],
                     itertools.product(potential_index[last_po], potential_index[current_po])):
-
                 childrens[a].add(b)
     result = []
-    # print('children:')
-    # print(childrens)
+    top_two_length, top_path = [0, 0], []
     potentials_0 = potential_index[0]
     for i in range(d):
+        to_print = (i % 10 == 0)
         delete_node(childrens, dies[i])
         potentials_0.discard(dies[i])
-        sub_result = find_longest_path(childrens, clubs, list(potentials_0))
-        result.append(sub_result)
+        try:
+            die_index = top_path.index(dies[i])
+        except ValueError:
+            die_index = -1
+        if top_path and die_index == -1:
+            pass
+            if debug and to_print:
+                print('P1')
+        elif top_path and die_index >= top_two_length[1]:
+            top_two_length[0] = die_index
+            top_path = top_path[:die_index]
+            if debug and to_print:
+                print('P2')
+        else:
+            if debug and to_print:
+                print('P3')
+            top_two_length, top_path = find_longest_path(childrens, clubs, list(potentials_0))
+        result.append(top_two_length[0])
     return result
 
 def main():
@@ -71,7 +100,20 @@ def main():
     # print('T:', round(tock - tick ,5))
 
 def test():
-    pass
+    n, m = 1000, 1000
+    potentials = list(range(n))
+    clubs = list(range(m))
+    dies = list(reversed(range(1, n + 1)))
+    d = n
+    # tick = time.time()
+    result = solve(potentials, clubs, dies, m, n, d)
+    # tock = time.time()
+    # Deal with output.
+    for ele in result:
+        print(ele)
+    # Printe time.
+    # print('T:', round(tock - tick ,5))
+
 
 if __name__ == "__main__":
     main()
