@@ -31,10 +31,6 @@ def find_longest_path(children, clubs, frontier):
     return result, top_path
 
 def solve(potentials, clubs, dies, m, n, d):
-    debug = False
-    if m > 100:
-        print('Debug on due to m =', m)
-        debug = True
     potential_index = {}
     for i, p in enumerate(potentials):
         if p in potential_index:
@@ -57,7 +53,6 @@ def solve(potentials, clubs, dies, m, n, d):
     top_two_length, top_path = [0, 0], []
     potentials_0 = potential_index[0]
     for i in range(d):
-        to_print = (i % 10 == 0)
         delete_node(childrens, dies[i])
         potentials_0.discard(dies[i])
         try:
@@ -66,16 +61,10 @@ def solve(potentials, clubs, dies, m, n, d):
             die_index = -1
         if top_path and die_index == -1:
             pass
-            if debug and to_print:
-                print('P1')
         elif top_path and die_index >= top_two_length[1]:
             top_two_length[0] = die_index
             top_path = top_path[:die_index]
-            if debug and to_print:
-                print('P2')
         else:
-            if debug and to_print:
-                print('P3')
             top_two_length, top_path = find_longest_path(childrens, clubs, list(potentials_0))
         result.append(top_two_length[0])
     return result
